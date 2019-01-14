@@ -39,4 +39,5 @@ alter table metadatadb.dbo.tbl_column_info
 	add constraint fk_md_column_info foreign key (system_type__id, user_type__id) references metadatadb.dbo.tbl_ref_dtypes (system_type__id, user_type__id);
 
 alter table metadatadb.dbo.tbl_column_info
-	add constraint fk_md_column_info2 foreign key (object__id) references metadatadb.dbo.tbl_table_info (object__id) on delete cascade;
+	--drop constraint fk_md_column_info2
+	add constraint fk_md_column_info2 foreign key (object__id) references metadatadb.dbo.tbl_table_info (object__id) on delete cascade on update cascade;

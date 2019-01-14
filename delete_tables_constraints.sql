@@ -21,7 +21,6 @@
 alter table metadatadb.dbo.tbl_column_info
 	drop constraint fk_md_column_info
 
-
 alter table metadatadb.dbo.tbl_column_info
 	drop constraint fk_md_column_info2
 

@@ -24,8 +24,8 @@ create table metadatadb.dbo.tbl_table_info(name nvarchar(128) not null,
 										   schema__id int not null,
 										   create_date datetime not null,
 										   modify_date datetime not null,
-										   max_column_id_used int not null,
-										   uses_ansi_nulls bit not null);
+										   max_column_id_used int null,
+										   uses_ansi_nulls bit null);
 
 alter table metadatadb.dbo.tbl_table_info
 	add constraint pk_md_table_info	primary key (object__id);

@@ -24,7 +24,8 @@ create table metadatadb.dbo.tbl_column_desc(object__id int not null,
 											column_notes nvarchar(255) null);
 
 alter table metadatadb.dbo.tbl_column_desc
-	add constraint fk_md_column_desc foreign key (object__id, name) references metadatadb.dbo.tbl_column_info (object__id, name) on delete cascade;
+	--drop constraint fk_md_column_desc
+	add constraint fk_md_column_desc foreign key (object__id, name) references metadatadb.dbo.tbl_column_info (object__id, name) on delete cascade on update cascade;
 
 alter table metadatadb.dbo.tbl_column_desc
 	add constraint unq_md_column_desc unique (object__id, name);

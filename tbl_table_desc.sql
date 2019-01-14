@@ -24,7 +24,8 @@ create table metadatadb.dbo.tbl_table_desc(name nvarchar(128) not null,
 										   table_notes nvarchar(255));
 
 alter table metadatadb.dbo.tbl_table_desc
-	add constraint fk_md_table_desc foreign key (object__id) references metadatadb.dbo.tbl_table_info(object__id) on delete cascade;
+	--drop constraint fk_md_table_desc
+	add constraint fk_md_table_desc foreign key (object__id) references metadatadb.dbo.tbl_table_info(object__id) on delete cascade on update cascade;
 
 alter table metadatadb.dbo.tbl_table_desc
 	--drop constraint unq_md_table_desc

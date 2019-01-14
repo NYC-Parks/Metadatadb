@@ -47,6 +47,18 @@ create procedure dbo.sp_insert_table_info as
 			  where lower(name) not like 'gdb%' and
 					lower(name) not like 'sde%' and
 					lower(name) not like '[ida][0-9]%'
+			  union all
+			  select name, 
+			  		object_id as object__id,
+			  		schema_id as schema__id,
+			  		create_date,
+			  		modify_date,
+			  		cast(null as int) as max_column_id_used,
+			  		cast(null as int) as uses_ansi_nulls
+			  from dwh.sys.views
+			  where lower(name) not like 'st%' and
+					lower(name) not like 'sde%' and
+					lower(name) not like 'dbtune'
 			  except
 			  select name, 
 					 object__id,

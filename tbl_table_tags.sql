@@ -27,5 +27,6 @@ alter table metadatadb.dbo.tbl_table_tags
 	add constraint pk_md_table_tags primary key (tag__id);
 
 alter table metadatadb.dbo.tbl_table_tags
-	add constraint fk_md_table_tags foreign key (object__id) references metadatadb.dbo.tbl_table_info (object__id);
+	--drop constraint fk_md_table_tags
+	add constraint fk_md_table_tags foreign key (object__id) references metadatadb.dbo.tbl_table_info (object__id) on delete cascade on update cascade;
 

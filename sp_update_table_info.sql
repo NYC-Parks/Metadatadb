@@ -35,33 +35,10 @@ create procedure dbo.sp_update_table_info as
 						   uses_ansi_nulls bit null);
 
 		with tabs as(
-		select name, 
-			   object_id as object__id,
-			   schema_id as schema__id,
-			   create_date,
-			   modify_date,
-			   max_column_id_used,
-			   uses_ansi_nulls,
-			   cast(cast(object_id as nvarchar(10)) + cast(schema_id as nvarchar(2)) + cast(create_date as nvarchar(24)) + cast(modify_date as nvarchar(24))+ cast(max_column_id_used as nvarchar(10))+ cast(uses_ansi_nulls as nvarchar(1)) as varbinary(max)) as bin_row
-		from dwh.sys.tables 
-		/*Exclude all geodatabase related items*/
-		where lower(name) not like 'gdb%' and
-			  lower(name) not like 'sde%' and
-			  lower(name) not like '[ida][0-9]%'
-		union all
-		select name, 
-			   object_id as object__id,
-			   schema_id as schema__id,
-			   create_date,
-			   modify_date,
-			   cast(null as int) as max_column_id_used,
-			   cast(null as int) as uses_ansi_nulls,
-			   cast(cast(object_id as nvarchar(10)) + cast(schema_id as nvarchar(2)) + cast(create_date as nvarchar(24)) + cast(modify_date as nvarchar(24))+ cast(cast(isnull(null, -1) as int) as nvarchar(10))+ cast(cast(isnull(null, 9) as int) as nvarchar(1)) as varbinary(max)) as bin_row
-		from dwh.sys.views
-		where lower(name) not like 'st%' and
-			  lower(name) not like 'sde%' and
-			  lower(name) not like 'dbtune')
-		--select * from tabs
+		select *
+		from metadatadb.dbo.vw_table_info)
+
+		/*Insert the differences between the current metadata table and the current information in the system table*/
 		insert into @uptabs (name,
 							 object__id,
 							 schema__id,
@@ -69,20 +46,11 @@ create procedure dbo.sp_update_table_info as
 							 modify_date,
 							 max_column_id_used,
 							 uses_ansi_nulls)
-			select l.name,
-				   l.object__id,
-				   l.schema__id,
-				   l.create_date,
-				   l.modify_date,
-				   l.max_column_id_used,
-				   l.uses_ansi_nulls
-			from tabs as l
-			inner join
-				(select *,
-						cast(cast(object__id as nvarchar(10)) + cast(schema__id as nvarchar(2)) + cast(create_date as nvarchar(24)) + cast(modify_date as nvarchar(24))+ cast(cast(isnull(max_column_id_used, -1) as int) as nvarchar(10))+ cast(cast(isnull(uses_ansi_nulls, 9) as int) as nvarchar(1)) as varbinary(max)) as bin_row 
-				 from metadatadb.dbo.tbl_table_info) as r
-			on l.name = r.name
-			where l.bin_row != r.bin_row;
+			select *
+			from tabs
+			except
+			select *
+			from metadatadb.dbo.tbl_table_info
 
 		set @n = (select max(rowid) from @uptabs);
 

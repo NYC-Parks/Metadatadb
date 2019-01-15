@@ -19,30 +19,30 @@
 ***********************************************************************************************************************/
 use metadatadb
 go
---drop procedure dbo.sp_insert_table_info
-create procedure dbo.sp_insert_table_info as
-	insert into metadatadb.dbo.tbl_table_info(name, 
-											  object__id,
-											  schema__id,
-											  create_date,
-											  modify_date,
-											  max_column_id_used,
-											  uses_ansi_nulls)
-		select name, 
-			   object__id,
-			   schema__id,
-			   create_date,
-			   modify_date,
-			   max_column_id_used,
-			   uses_ansi_nulls
-		from (select *
-			  from metadatadb.dbo.vw_table_info
-			  except
-			  select name, 
-					 object__id,
-					 schema__id,
-					 create_date,
-					 modify_date,
-					 max_column_id_used,
-					 uses_ansi_nulls
-			  from metadatadb.dbo.tbl_table_info) as t;
+
+create view dbo.vw_table_info as
+	select name, 
+			object_id as object__id,
+			schema_id as schema__id,
+			create_date,
+			modify_date,
+			max_column_id_used,
+			uses_ansi_nulls
+	from dwh.sys.tables 
+	/*Exclude all geodatabase related items*/
+	where lower(name) not like 'gdb%' and
+		  lower(name) not like 'sde%' and
+		  lower(name) not like '[ida][0-9]%'
+	union all
+	select name, 
+			object_id as object__id,
+			schema_id as schema__id,
+			create_date,
+			modify_date,
+			cast(null as int) as max_column_id_used,
+			cast(null as int) as uses_ansi_nulls
+	from dwh.sys.views
+	/*Exclude the spaital database views and the dbtune view.*/
+	where lower(name) not like 'st%' and
+		  lower(name) not like 'sde%' and
+		  lower(name) not like 'dbtune'

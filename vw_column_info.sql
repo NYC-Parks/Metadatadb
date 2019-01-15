@@ -19,30 +19,22 @@
 ***********************************************************************************************************************/
 use metadatadb
 go
---drop procedure dbo.sp_insert_table_info
-create procedure dbo.sp_insert_table_info as
-	insert into metadatadb.dbo.tbl_table_info(name, 
-											  object__id,
-											  schema__id,
-											  create_date,
-											  modify_date,
-											  max_column_id_used,
-											  uses_ansi_nulls)
-		select name, 
-			   object__id,
-			   schema__id,
-			   create_date,
-			   modify_date,
-			   max_column_id_used,
-			   uses_ansi_nulls
-		from (select *
-			  from metadatadb.dbo.vw_table_info
-			  except
-			  select name, 
-					 object__id,
-					 schema__id,
-					 create_date,
-					 modify_date,
-					 max_column_id_used,
-					 uses_ansi_nulls
-			  from metadatadb.dbo.tbl_table_info) as t;
+
+create view dbo.vw_column_info as
+	select *
+	from metadatadb.dbo.tbl_column_info
+	except
+	select object_id as object__id,
+			name,
+			column_id,
+			system_type_id as system_type__id,
+			user_type_id as user_type__id,
+			max_length,
+			precision,
+			scale,
+			collation_name,
+			is_nullable,
+			is_ansi_padded,
+			is_identity,
+			is_computed
+	from dwh.sys.columns;

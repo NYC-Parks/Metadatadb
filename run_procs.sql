@@ -17,32 +17,12 @@
 	       vis. His ad sonet probatus torquatos, ut vim tempor vidisse deleniti.>  									   
 																													   												
 ***********************************************************************************************************************/
-use metadatadb
-go
---drop procedure dbo.sp_insert_table_info
-create procedure dbo.sp_insert_table_info as
-	insert into metadatadb.dbo.tbl_table_info(name, 
-											  object__id,
-											  schema__id,
-											  create_date,
-											  modify_date,
-											  max_column_id_used,
-											  uses_ansi_nulls)
-		select name, 
-			   object__id,
-			   schema__id,
-			   create_date,
-			   modify_date,
-			   max_column_id_used,
-			   uses_ansi_nulls
-		from (select *
-			  from metadatadb.dbo.vw_table_info
-			  except
-			  select name, 
-					 object__id,
-					 schema__id,
-					 create_date,
-					 modify_date,
-					 max_column_id_used,
-					 uses_ansi_nulls
-			  from metadatadb.dbo.tbl_table_info) as t;
+/*Insert any new data types, these will almost never or never will change*/
+exec metadatadb.dbo.sp_insert_ref_dtypes;
+/*Update the table info table for any table that currently exist, but had some attribute (other than name) change.*/
+exec metadatadb.dbo.sp_update_table_info;
+/*Insert any new tables into table info. These changes will be reflected in the related tables with triggers*/
+exec metadatadb.dbo.sp_insert_table_info;
+/*Update the column info table to reflect any changes in attributes (other than object__id) or name*/
+exec metadatadb.dbo.sp_update_column_info;
+

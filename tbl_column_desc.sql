@@ -25,7 +25,7 @@ create table metadatadb.dbo.tbl_column_desc(object__id int not null,
 											column_notes nvarchar(255) null,
 											column_required bit,
 											column_values nvarchar(max),
-											row__id int identity(1,1));
+											row__id int identity(1,1) not null);
 
 alter table metadatadb.dbo.tbl_column_desc
 	--drop constraint fk_md_column_desc

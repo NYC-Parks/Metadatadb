@@ -2,7 +2,7 @@
 																													   	
  Created By: Dan Gallagher, daniel.gallagher@parks.nyc.gov, Innovation & Performance Management         											   
  Modified By: <Modifier Name>																						   			          
- Created Date:  <MM/DD/YYYY>																							   
+ Created Date:  02/01/2019																							   
  Modified Date: <MM/DD/YYYY>																							   
 											       																	   
  Project: <Project Name>	
@@ -17,23 +17,10 @@
 	       vis. His ad sonet probatus torquatos, ut vim tempor vidisse deleniti.>  									   
 																													   												
 ***********************************************************************************************************************/
---drop table metadatadb.dbo.tbl_table_desc;
-create table metadatadb.dbo.tbl_table_desc(name nvarchar(128) not null,
-										   object__id int not null,
-										   table_desc nvarchar(255),
-										   table_notes nvarchar(255),
-										   table_background nvarchar(1000),
-										   table_contact nvarchar(100),
-										   division__id int);
+create table metadatadb.dbo.tbl_ref_divisions(division__id int identity(1,1) not null,
+											  division_name nvarchar(100) not null,
+											  division_desc nvarchar(500));
 
-alter table metadatadb.dbo.tbl_table_desc
-	--drop constraint fk_md_table_desc
-	add constraint fk_md_table_desc foreign key (object__id) references metadatadb.dbo.tbl_table_info(object__id) on delete cascade on update cascade;
-
-alter table metadatadb.dbo.tbl_table_desc
-	--drop constraint unq_md_table_desc
-	add constraint unq_md_table_desc unique (object__id, name);
-
-alter table metadatadb.dbo.tbl_table_desc
-	--drop constraint fk_md_table_desc_div
-	add constraint fk_md_table_desc_div foreign key (division__id) references metadatadb.dbo.tbl_ref_divisions(division__id) on delete cascade on update cascade;
+alter table metadatadb.dbo.tbl_ref_divisions
+	--drop constraint pk_ref_division_div
+	add constraint pk_ref_division_div primary key (division__id);

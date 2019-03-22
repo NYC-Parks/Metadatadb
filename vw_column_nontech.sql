@@ -27,7 +27,7 @@ create view dbo.vw_column_nontech as
 		   r.column_desc,
 		   r.column_notes,
 		   r2.common_type,
-		   r.row__id
+		   isnull(r.row__id, -99) as row__id
 	from metadatadb.dbo.tbl_column_info as l
 	left join
 		 metadatadb.dbo.tbl_column_desc as r

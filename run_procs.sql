@@ -17,12 +17,18 @@
 	       vis. His ad sonet probatus torquatos, ut vim tempor vidisse deleniti.>  									   
 																													   												
 ***********************************************************************************************************************/
-/*Insert any new data types, these will almost never or never will change*/
-exec metadatadb.dbo.sp_insert_ref_dtypes;
-/*Update the table info table for any table that currently exist, but had some attribute (other than name) change.*/
-exec metadatadb.dbo.sp_update_table_info;
-/*Insert any new tables into table info. These changes will be reflected in the related tables with triggers*/
-exec metadatadb.dbo.sp_insert_table_info;
-/*Update the column info table to reflect any changes in attributes (other than object__id) or name*/
-exec metadatadb.dbo.sp_update_column_info;
+use metadatadb
+go
+
+create procedure dbo.sp_run_procs as
+begin
+	/*Insert any new data types, these will almost never or never will change*/
+	exec metadatadb.dbo.sp_insert_ref_dtypes;
+	/*Update the table info table for any table that currently exist, but had some attribute (other than name) change.*/
+	exec metadatadb.dbo.sp_update_table_info;
+	/*Insert any new tables into table info. These changes will be reflected in the related tables with triggers*/
+	exec metadatadb.dbo.sp_insert_table_info;
+	/*Update the column info table to reflect any changes in attributes (other than object__id) or name*/
+	exec metadatadb.dbo.sp_update_column_info;
+end;
 
